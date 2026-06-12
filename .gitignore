@@ -1,0 +1,28 @@
+# Python bytecode & cache
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+venv.bak/
+.venv.bak/
+
+# Project-specific node storage (Mini-Dropbox chunk storage)
+node*_store/
+
+# IDE files and OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# User test files / generated inputs and outputs
+hello.txt
+my_output.txt
+downloaded_image.jpg
+cat.jpg
+*.log
