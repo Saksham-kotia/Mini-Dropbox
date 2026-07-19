@@ -102,52 +102,7 @@ Mini-Dropbox addresses these challenges by implementing:
 
 ## 🏗️ System Architecture
 
-### High-Level Architecture
-
-```mermaid
-graph TB
-    subgraph "Client Layer"
-        C[Client CLI]
-    end
-    
-    subgraph "Master Node - Port 9000"
-        M[Master Service<br/>gRPC Server]
-        FM[File Manifest<br/>filename → chunks]
-        CL[Chunk Locations<br/>chunk_id → nodes]
-        NR[Node Registry<br/>Available Storage Nodes]
-    end
-    
-    subgraph "Storage Layer"
-        SN1[Storage Node 1<br/>Port 9001<br/>gRPC Server]
-        SN2[Storage Node 2<br/>Port 9002<br/>gRPC Server]
-        
-        subgraph "Node 1 Store"
-            D1[(Disk Storage<br/>node1_store/)]
-        end
-        
-        subgraph "Node 2 Store"
-            D2[(Disk Storage<br/>node2_store/)]
-        end
-    end
-    
-    C -->|gRPC Calls| M
-    C -->|Upload/Download Chunks| SN1
-    C -->|Upload/Download Chunks| SN2
-    
-    M -.->|Metadata Only| FM
-    M -.->|Metadata Only| CL
-    M -.->|Track Nodes| NR
-    
-    SN1 -->|Store Chunks| D1
-    SN2 -->|Store Chunks| D2
-    
-    style M fill:#ff9999
-    style SN1 fill:#99ccff
-    style SN2 fill:#99ccff
-    style C fill:#99ff99
-```
-
-### Data Flow Architecture
+### Data Flow
 
 ```mermaid
 flowchart LR
@@ -232,65 +187,6 @@ flowchart LR
 | **Concurrent Requests** | 10 per server | ThreadPoolExecutor limit |
 | **Fault Tolerance** | 1 node failure | System remains operational |
 
-### CLI Analysis Output Example
-
-```bash
-$ ./run.sh analyze
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Mini-Dropbox System Analysis
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[SYSTEM STATUS]
-✓ Master Node: RUNNING (PID: 12345, Port: 9000)
-✓ Storage Node 1: RUNNING (PID: 12346, Port: 9001)
-✓ Storage Node 2: RUNNING (PID: 12347, Port: 9002)
-
-[STORAGE ANALYSIS]
-  Node 1 Storage:
-    • Chunks: 158
-    • Size: 10M
-    • Location: /home/user/Mini-Dropbox/node1_store
-
-  Node 2 Storage:
-    • Chunks: 158
-    • Size: 10M
-    • Location: /home/user/Mini-Dropbox/node2_store
-
-[CHUNK ANALYSIS - SHA-256 HASHED]
-  Total Chunks: 158
-  Unique Chunks: 79
-  Replication Factor: 2.00
-
-  Chunk Distribution:
-    600a47a25ca786f9...
-      ├─ Size: 64K
-      └─ Replicas: [node1 node2]
-    9e22da6bc3ba3f52...
-      ├─ Size: 64K
-      └─ Replicas: [node1 node2]
-
-[FILE MANIFEST]
-  Total Files: 3
-  
-  Files:
-    • document.pdf
-      └─ Chunks: 79
-    • image.png
-      └─ Chunks: 45
-    • video.mp4
-      └─ Chunks: 234
-
-[NETWORK CONFIGURATION]
-  Protocol: gRPC (Protocol Buffers)
-  Master: 127.0.0.1:9000
-  Node 1: 127.0.0.1:9001
-  Node 2: 127.0.0.1:9002
-  Chunk Size: 64 KB
-  Hash Algorithm: SHA-256
-```
-
----
 
 ## 🎓 Conclusion
 
